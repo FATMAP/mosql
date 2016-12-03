@@ -237,8 +237,6 @@ module MoSQL
             end
           else
             v = transform_primitive(v, type)
-            log.info(v)
-            v
           end
         end
         row << v
