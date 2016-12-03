@@ -89,7 +89,7 @@ module MoSQL
               if col[:source] == '$timestamp'
                 opts[:default] = Sequel.function(:now)
               end
-              column col[:name], col[:type], opts
+              column col[:name], col[:type] == 'PARSE FOREIGN KEY' ? 'TEXT' : col[:type] , opts
 
               if composite_key and composite_key.include?(col[:name])
                 keys << col[:name].to_sym
@@ -198,7 +198,11 @@ module MoSQL
       when BSON::DBRef
         v.object_id.to_s
       else
-        v
+        if v && type.downcase == 'parse foreign key'
+          v.split('$').last
+        else
+          v
+        end
       end
     end
 
@@ -233,6 +237,8 @@ module MoSQL
             end
           else
             v = transform_primitive(v, type)
+            log.info(v)
+            v
           end
         end
         row << v
