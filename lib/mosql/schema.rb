@@ -198,7 +198,7 @@ module MoSQL
       when BSON::DBRef
         v.object_id.to_s
       else
-        if v && type.downcase == 'parse foreign key'
+        if v && type && type.downcase == 'parse foreign key'
           v.split('$').last
         else
           v
